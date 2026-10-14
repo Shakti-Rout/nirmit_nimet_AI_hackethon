@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prerana AI - Agentic EdTech Platform (Nextech 2.0)</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+</head>
+<body>
+
+  <!-- OFFLINE ALERT BANNER -->
+  <div class="offline-banner" id="offlineBanner" style="display: none;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span>⚠️</span>
+      <span id="offlineBannerText">Offline mode active: Running on cached curriculum vectors and deterministic rule engine.</span>
+    </div>
+    <button class="btn btn-sm btn-secondary" onclick="window.offlineManager.toggleOffline()">Switch to Online</button>
+  </div>
+
+  <!-- NAVIGATION BAR -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <div class="brand-logo">
+        <span>🚀</span>
+        <span id="appTitle">Prerana AI</span>
+        <span style="font-size: 1rem; color: #a5b4fc; font-weight: 500;">(ପ୍ରେରଣା AI)</span>
+      </div>
+      <span class="hackathon-pill" id="hackathonBadge">Nextech 2.0 Agentic AI Hackathon</span>
+    </div>
+
+    <!-- PORTAL ROLE TABS -->
+    <div class="role-tabs">
+      <button class="role-tab-btn active" data-role="student">
+        <span>🎓</span>
+        <span id="tabStudentText">Student Portal</span>
+      </button>
+      <button class="role-tab-btn" data-role="teacher">
+        <span>👨‍🏫</span>
+        <span id="tabTeacherText">Teacher Portal</span>
+      </button>
+      <button class="role-tab-btn" data-role="developer">
+        <span>💻</span>
+        <span id="tabDevText">Developer & Evaluator</span>
+      </button>
+    </div>
+
+    <div class="nav-controls">
+      <!-- LANGUAGE SWITCHER (English, Odia, Tamil, Telugu, Kannada, Malayalam) -->
+      <select class="custom-select" id="langSelect" title="Select Regional Language">
+        <option value="or" selected>🇮🇳 ଓଡ଼ିଆ (Odia)</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="ta">🇮🇳 தமிழ் (Tamil)</option>
+        <option value="te">🇮🇳 తెలుగు (Telugu)</option>
+        <option value="kn">🇮🇳 ಕನ್ನಡ (Kannada)</option>
+        <option value="ml">🇮🇳 മലയാളം (Malayalam)</option>
+      </select>
+
+      <!-- NETWORK TOGGLE (Online / Offline Simulation) -->
+      <div class="network-badge online" id="networkBadge" title="Click to toggle Offline/Online simulation">
+        <span class="status-dot green" id="networkDot"></span>
+        <span id="networkText">Online Mode</span>
+      </div>
+
+      <!-- SYNC BUTTON (Displays when offline events exist) -->
+      <button class="btn btn-accent btn-sm" id="syncNowBtn" style="display: none;">
+        Sync Offline Data
+      </button>
+
+      <!-- PITCH DECK & CHECKPOINT BUTTON -->
+      <button class="btn btn-secondary btn-sm" id="pitchDeckBtn">
+        📊 <span id="pitchDeckBtnText">Pitch Deck & Checkpoint</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="app-container">
+
+    <!-- ============================================================ -->
+    <!-- 1. STUDENT PORTAL -->
+    <!-- ============================================================ -->
+    <section class="portal-panel active" id="studentPortal">
+      <div class="student-grid">
+
+        <!-- LEFT SIDEBAR: PROFILE & PROGRESS -->
+        <aside class="student-sidebar">
+          <div class="glass-card">
+            <div class="card-title">
+              <span>👤 Learner Profile</span>
+              <span class="hackathon-pill" style="font-size:0.7rem;">Class 10</span>
+            </div>
+            <div style="font-weight: 700; font-size: 1.05rem; color: #f8fafc;">Aarav Mohapatra</div>
+            <div style="font-size: 0.85rem; color: #38bdf8; margin-bottom: 0.8rem;">Govt High School, Khordha (ଓଡ଼ିଶା)</div>
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid #818cf8; margin-bottom: 1rem;">
+              <strong>Active Goal:</strong> Master Newton's Laws with Vernacular Scaffolding
+            </div>
+
+            <div class="card-title" style="margin-top: 1rem;">
+              <span id="masteryTitle">Concept Mastery</span>
+              <span style="font-size: 0.75rem; color: #10b981;">Adaptive</span>
+            </div>
+            <div id="masteryList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div class="glass-card">
+            <div class="card-title">
+              <span>💡 Starter Topics (Click to Ask)</span>
+            </div>
+            <div class="topic-pills">
+              <button class="topic-pill" data-query="ନିଉଟନଙ୍କ ତୃତୀୟ ଗତି ନିୟମ କ’ଣ ଏବଂ ଡଙ୍ଗା ଚଳାଇବା ଉଦାହରଣ ବୁଝାନ୍ତୁ">
+                🌊 ନିଉଟନଙ୍କ ତୃତୀୟ ଗତି ନିୟମ (Odia)
+              </button>
+              <button class="topic-pill" data-query="Explain Newton's Third Law and why action-reaction forces don't cancel">
+                🍎 Newton's 3rd Law Non-Cancellation (English)
+              </button>
+              <button class="topic-pill" data-query="ଆଲୋକ ଶ୍ଳେଷଣ ପ୍ରକ୍ରିୟାରେ ଅମ୍ଳଜାନ କିପରି ବାହାରେ?">
+                🌿 ଆଲୋକ ଶ୍ଳେଷଣ ଓ ହରିତ୍‌କଣା (Odia)
+              </button>
+              <button class="topic-pill" data-query="ஒளிச்சேர்க்கை மற்றும் நியூட்டனின் விதி பற்றி விளக்குங்கள்">
+                🔬 ஒளிச்சேர்க்கை விளக்கம் (Tamil)
+              </button>
+              <button class="topic-pill" data-query="What makes an EdTech system Agentic rather than a simple chatbot?">
+                🤖 Conventional Chatbot vs Agentic AI (CS)
+              </button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- RIGHT: AGENTIC CHAT CANVAS -->
+        <div class="chat-container">
+          <div style="padding: 10px 1.5rem; background: rgba(15, 23, 42, 0.7); border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span class="status-dot green"></span>
+              <span style="font-size: 0.82rem; font-weight: 600; color: #a5b4fc;" id="agentStatusText">
+                Agent ready: Standing by to plan pedagogical steps
+              </span>
+            </div>
+            <div style="font-size: 0.75rem; color: #94a3b8;">
+              Mode: <strong id="studentActiveFramework" style="color: #38bdf8;">Autonomous ReAct</strong>
+            </div>
+          </div>
+
+          <div class="chat-messages" id="chatMessages">
+            <!-- Messages rendered dynamically -->
+          </div>
+
+          <!-- INPUT & MULTI-MODAL ACTIONS -->
+          <div class="chat-input-bar">
+            <!-- VOICE TO VOICE BUTTON -->
+            <button class="voice-btn" id="v2vBtn" title="Voice-to-Voice: Speak to agent and listen to response">
+              🎙️
+            </button>
+
+            <!-- VOICE TO TEXT DICTATION BUTTON -->
+            <button class="voice-btn" id="sttBtn" title="Voice-to-Text: Dictate query into box">
+              🎤
+            </button>
+
+            <div class="input-field-wrapper">
+              <input
+                type="text"
+                class="chat-input-text"
+                id="chatInput"
+                placeholder="Ask a question, enter a topic, or speak in your language..."
+              />
+            </div>
+
+            <button class="btn btn-primary" id="sendBtn">
+              <span>Ask Agent</span>
+              <span>➔</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 2. TEACHER PORTAL -->
+    <!-- ============================================================ -->
+    <section class="portal-panel" id="teacherPortal">
+      <div class="dashboard-grid">
+
+        <!-- RAG CURRICULUM INGESTION -->
+        <div class="glass-card">
+          <div class="card-title">
+            <span>📚 Curriculum & Textbook RAG Ingestion</span>
+            <span class="hackathon-pill">Vector Indexing</span>
+          </div>
+          <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 1rem;">
+            Upload State Board textbook chapters or notes (PDF / Text). The RAG engine automatically chunks, embeds, and grounds the agent's teaching.
+          </p>
+
+          <form id="teacherUploadForm">
+            <div class="form-group">
+              <label>Document Title / Chapter Name</label>
+              <input type="text" class="form-control" id="docTitle" placeholder="e.g. Class 10 Science - Chemical Reactions" required />
+            </div>
+
+            <div class="form-group">
+              <label>Subject</label>
+              <select class="form-control" id="docSubject">
+                <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Biology">Biology</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Computer Science">Computer Science</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Upload File (PDF or Text)</label>
+              <input type="file" class="form-control" id="docFile" accept=".pdf,.txt,.md" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              <span>Ingest Document into Vector Store</span>
+            </button>
+          </form>
+
+          <div id="uploadStatus" style="margin-top: 1rem; font-size: 0.85rem; color: #38bdf8;"></div>
+        </div>
+
+        <!-- REGIONAL LESSON PLAN GENERATOR -->
+        <div class="glass-card">
+          <div class="card-title">
+            <span>📝 Regional Lesson Plan Generator</span>
+            <span class="hackathon-pill">Teacher Agent</span>
+          </div>
+          <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 1rem;">
+            Autonomous curriculum agent designs localized lesson plans with mother-tongue analogies and diagnostic experiments.
+          </p>
+
+          <div class="form-group">
+            <label>Topic to Teach</label>
+            <input type="text" class="form-control" id="lessonTopicInput" value="Newton's Third Law of Motion" />
+          </div>
+
+          <div class="form-group">
+            <label>Class / Grade</label>
+            <input type="text" class="form-control" id="lessonGradeInput" value="Class 10 - State Board" />
+          </div>
+
+          <button class="btn btn-secondary" id="genLessonPlanBtn" style="width: 100%;">
+            <span>Generate Regional Lesson Plan</span>
+          </button>
+
+          <div id="lessonPlanResult" style="margin-top: 1.2rem; background: rgba(15, 23, 42, 0.6); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); font-size: 0.85rem; max-height: 240px; overflow-y: auto;">
+            Click button above to synthesize lesson plan using RAG grounding.
+          </div>
+        </div>
+
+        <!-- CLASSROOM DIAGNOSTIC OVERVIEW -->
+        <div class="glass-card full-width">
+          <div class="card-title">
+            <span>📊 Classroom Diagnostics & Learning Gaps</span>
+            <span class="hackathon-pill">Intervention Insights</span>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-label">Total Students</div>
+              <div class="stat-number" id="statTotalStudents">38</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Average Mastery</div>
+              <div class="stat-number" id="statAvgMastery">71.4%</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">At-Risk Learners</div>
+              <div class="stat-number" style="color: #ef4444;" id="statAtRisk">6</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Target Medium</div>
+              <div class="stat-number" style="font-size: 1.4rem;">Odia / Vernacular</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem;">
+            <div style="font-weight: 600; font-size: 0.95rem; margin-bottom: 8px; color: #f8fafc;">
+              Top Identified Concept Gaps (Ranked by Misconception Frequency):
+            </div>
+            <div id="struggleTopicsList">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- 3. DEVELOPER & EVALUATOR PORTAL -->
+    <!-- ============================================================ -->
+    <section class="portal-panel" id="developerPortal">
+      <div class="dashboard-grid">
+
+        <!-- FRAMEWORK SWITCHER (Section 5 Requirement) -->
+        <div class="glass-card full-width">
+          <div class="card-title">
+            <span>⚙️ Agentic Architecture Framework Selection (Section 5)</span>
+            <span class="hackathon-pill" id="activeFrameworkBadge">AUTONOMOUS</span>
+          </div>
+          <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 1rem;">
+            The Hackathon explicitly allows either <strong>Deterministic</strong> or <strong>Autonomous</strong> workflows.
+            Prerana implements BOTH and allows dynamic switching with full architectural justification.
+          </p>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <label style="background: rgba(15, 23, 42, 0.6); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); cursor: pointer; display: block;">
+              <input type="radio" name="frameworkToggle" value="autonomous" checked />
+              <strong style="color: #38bdf8; margin-left: 6px;">Autonomous ReAct Agent</strong>
+              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 6px;">
+                Goal-driven agent that plans steps, invokes tools dynamically (RAG, Analogies, Quizzes), observes outputs, and self-corrects.
+                <strong>Best for:</strong> Open-ended personalized tutoring, diagnostic scaffolding.
+              </p>
+            </label>
+
+            <label style="background: rgba(15, 23, 42, 0.6); padding: 1rem; border-radius: 8px; border: 1px solid var(--card-border); cursor: pointer; display: block;">
+              <input type="radio" name="frameworkToggle" value="deterministic" />
+              <strong style="color: #a855f7; margin-left: 6px;">Deterministic Workflow Agent</strong>
+              <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 6px;">
+                Finite state machine with auditable, rule-based node transitions. Zero latency, guaranteed offline parity.
+                <strong>Best for:</strong> Standardized board exam drills, low-power offline edge hardware.
+              </p>
+            </label>
+          </div>
+        </div>
+
+        <!-- LIVE DECISION TRACE & TELEMETRY -->
+        <div class="glass-card">
+          <div class="card-title">
+            <span>🔍 Live Decision Trace & Execution Telemetry</span>
+            <span class="hackathon-pill">Core Criterion #2</span>
+          </div>
+          <p style="font-size: 0.82rem; color: #94a3b8; margin-bottom: 8px;">
+            Inspects the latest ReAct execution: thoughts, tool parameters, observations, and latency.
+          </p>
+          <div id="devLatestTrace" style="background: rgba(0, 0, 0, 0.5); padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.78rem; min-height: 200px; max-height: 280px; overflow-y: auto; color: #e2e8f0;">
+            Run a query or use voice in the Student Portal to see live execution trace telemetry.
+          </div>
+        </div>
+
+        <!-- DIRECT RAG VECTOR STORE EXPLORER -->
+        <div class="glass-card">
+          <div class="card-title">
+            <span>🔎 Direct RAG Vector Store Explorer</span>
+            <span class="hackathon-pill">TF-IDF & Cosine Sim</span>
+          </div>
+          <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+            <input type="text" class="form-control" id="devRagInput" placeholder="Test vector search: 'newton', 'photosynthesis'..." value="Newton's Third Law" />
+            <button class="btn btn-primary" id="devRagSearchBtn">Search</button>
+          </div>
+          <div id="devRagResults" style="max-height: 220px; overflow-y: auto;">
+            <!-- Vector search results rendered here -->
+          </div>
+        </div>
+
+        <!-- STATS & OFFLINE QUEUE INSPECTOR -->
+        <div class="glass-card full-width">
+          <div class="card-title">
+            <span>📊 Vector Store Stats & Offline Sync Queue</span>
+          </div>
+          <div class="stats-row" style="margin-bottom: 1rem;">
+            <div class="stat-card">
+              <div class="stat-label">Total RAG Chunks</div>
+              <div class="stat-number" id="devTotalChunks">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Vector Dimension</div>
+              <div class="stat-number" id="devVectorDim">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Custom Uploads</div>
+              <div class="stat-number" id="devCustomUploads">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Offline Events Buffered</div>
+              <div class="stat-number" style="color: #f59e0b;" id="devQueueCount">0</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- 4. PITCH DECK & MID-EVALUATION CHECKPOINT MODAL -->
+  <!-- ============================================================ -->
+  <div class="modal-overlay" id="pitchModal">
+    <div class="modal-content">
+      <button class="modal-close" id="closePitchBtn">&times;</button>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 0.8rem;">
+        <div>
+          <h2 style="font-size: 1.4rem; color: #f8fafc;">Prerana AI - Live Pitch Deck</h2>
+          <div style="font-size: 0.85rem; color: #818cf8;">Presented to Industry CTOs & Venture Partners • Nextech 2.0</div>
+        </div>
+        <span class="hackathon-pill" id="slideNumber">Slide 1 of 6</span>
+      </div>
+
+      <div class="slide-box">
+        <h3 class="slide-title" id="slideTitle">Loading Slide...</h3>
+        <ul class="slide-list" id="slideContent">
+          <!-- Loaded dynamically -->
+        </ul>
+      </div>
+
+      <div class="slide-controls">
+        <button class="btn btn-secondary" id="prevSlideBtn">◀ Previous</button>
+        <span style="font-size: 0.85rem; color: #94a3b8;">Use Prev/Next to navigate presentation</span>
+        <button class="btn btn-primary" id="nextSlideBtn">Next ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="/static/js/speech.js"></script>
+  <script src="/static/js/offline_sync.js"></script>
+  <script src="/static/js/app.js"></script>
+
+</body>
+</html>

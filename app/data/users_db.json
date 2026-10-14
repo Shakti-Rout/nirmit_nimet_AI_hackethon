@@ -1,0 +1,57 @@
+{
+  "users": {
+    "student@prerana.ai": {
+      "id": "std_001",
+      "email": "student@prerana.ai",
+      "password": "learn123",
+      "name": "Aarav Mohapatra (ଆରଭ ମହାପାତ୍ର)",
+      "role": "student",
+      "language": "or",
+      "grade": "Class 10 - Vernacular Medium",
+      "school": "Govt High School, Khordha",
+      "mastery": {
+        "Physics - Newton's Laws": 72,
+        "Biology - Photosynthesis": 65,
+        "Mathematics - Pythagoras": 80,
+        "Computer Science - Agentic AI": 58,
+        "newton": 60
+      },
+      "badges": [
+        "Odia Science Explorer",
+        "Newtonian Thinker"
+      ],
+      "active_goal": "Master Newton's Laws of Motion with Vernacular Analogies"
+    },
+    "teacher@prerana.ai": {
+      "id": "tch_001",
+      "email": "teacher@prerana.ai",
+      "password": "teach123",
+      "name": "Prof. Rashmi Rekha Das (ପ୍ରଫେସର ରଶ୍ମି ରେଖା ଦାସ)",
+      "role": "teacher",
+      "language": "or",
+      "subject": "Physical Sciences & STEM",
+      "institution": "Bhubaneswar Model School",
+      "classes_managed": [
+        "Class 9A",
+        "Class 10B"
+      ],
+      "documents_uploaded": 4
+    },
+    "dev@prerana.ai": {
+      "id": "dev_001",
+      "email": "dev@prerana.ai",
+      "password": "dev123",
+      "name": "Antigravity Evaluator / CTO Lead",
+      "role": "developer",
+      "language": "en",
+      "permissions": [
+        "all",
+        "inspect_trace",
+        "switch_framework",
+        "raw_vector_query",
+        "debug_offline_sync"
+      ],
+      "selected_framework": "autonomous"
+    }
+  }
+}
