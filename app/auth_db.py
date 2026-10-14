@@ -75,6 +75,15 @@ class AuthDatabase:
                 "language": "en",
                 "permissions": ["all", "inspect_trace", "switch_framework", "raw_vector_query", "debug_offline_sync"],
                 "selected_framework": "autonomous" # "autonomous" or "deterministic"
+            },
+            "admin@prerana.ai": {
+                "id": "adm_001",
+                "email": "admin@prerana.ai",
+                "password": "admin123",
+                "name": "Prerana Platform Administrator",
+                "role": "admin",
+                "language": "en",
+                "permissions": ["all"]
             }
         }
         self.save()
@@ -88,36 +97,18 @@ class AuthDatabase:
 
     def authenticate(self, email: str, password: str, expected_role: Optional[str] = None) -> Optional[Dict[str, Any]]:
         """Verifies credentials and issues a session."""
+        if expected_role and expected_role not in {"student", "teacher", "admin", "developer"}:
+            return None
+
         email_clean = email.strip().lower()
         user = self.users.get(email_clean)
         if not user:
-            # For hackathon ease of evaluation: allow creating or logging in with any email if role matches!
-            role_to_assign = expected_role or "student"
-            user_id = f"{role_to_assign[:3]}_{uuid.uuid4().hex[:6]}"
-            user = {
-                "id": user_id,
-                "email": email_clean,
-                "password": password,
-                "name": email_clean.split("@")[0].capitalize(),
-                "role": role_to_assign,
-                "language": "en",
-                "grade": "Standard 10",
-                "mastery": {"Physics": 50, "Mathematics": 50},
-                "badges": ["Quick Learner"],
-                "active_goal": "Personalized Vernacular Learning"
-            }
-            self.users[email_clean] = user
-            self.save()
+            return None
 
-        if user["password"] != password and user["password"] != "":
-            # For hackathon ease, let's accept password or match
-            if password not in ["learn123", "teach123", "dev123", user["password"]]:
-                return None
-
-        # Check role constraint if specified
         if expected_role and user.get("role") != expected_role:
-            user["role"] = expected_role
-            self.save()
+            return None
+        if user.get("password") != password:
+            return None
 
         token = str(uuid.uuid4())
         session = {

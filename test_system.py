@@ -121,6 +121,17 @@ def run_tests():
     assert teacher_sess["user"]["role"] == "teacher"
     print(f"  ✓ Teacher Login: {teacher_sess['user']['name']} ({teacher_sess['user']['role']})")
 
+    assert auth_db.authenticate("teacher@prerana.ai", "teach123", expected_role="student") is None
+    assert auth_db.users["teacher@prerana.ai"]["role"] == "teacher"
+    print("  ✓ Role mismatch is rejected without changing the account role")
+    assert auth_db.authenticate("unknown@prerana.ai", "password", expected_role="admin") is None
+    assert "unknown@prerana.ai" not in auth_db.users
+    print("  ✓ Unknown accounts cannot self-register as privileged roles")
+
+    admin_sess = auth_db.authenticate("admin@prerana.ai", "admin123", expected_role="admin")
+    assert admin_sess["user"]["role"] == "admin"
+    print(f"  ✓ Admin Login: {admin_sess['user']['name']} ({admin_sess['user']['role']})")
+
     dev_sess = auth_db.authenticate("dev@prerana.ai", "dev123", expected_role="developer")
     assert dev_sess["user"]["role"] == "developer"
     print(f"  ✓ Developer Login: {dev_sess['user']['name']} ({dev_sess['user']['role']})")
@@ -128,9 +139,62 @@ def run_tests():
     analytics = auth_db.get_class_analytics()
     print(f"  ✓ Teacher Class Diagnostics: {analytics['total_students']} students, {len(analytics['top_struggle_topics'])} struggle topics identified.")
 
+    # 8. Test AI-to-Live Teacher Escalation Engine (Astrotalk Hybrid Model)
+    print("\n[8/8] Testing AI-to-Live Teacher Escalation System...")
+    from app.escalation_engine import escalation_engine, EscalationRequest
+
+    # Test Marketplace
+    teachers = escalation_engine.get_marketplace_teachers(subject="Physics", language="or")
+    assert len(teachers) > 0, "Failed to retrieve marketplace teachers"
+    print(f"  ✓ Teacher Marketplace: Found {len(teachers)} matching Physics/Odia teachers.")
+    print(f"  ✓ Top Recommended: {teachers[0]['name']} (Score: {teachers[0]['ai_match_score']})")
+
+    # Test AI Teacher Brief
+    req = EscalationRequest(
+        student_name="Aarav Mohapatra",
+        grade="Class 10",
+        subject="Physics",
+        chapter="Newton's Laws of Motion",
+        original_question="Why do action and reaction forces never cancel?",
+        confusion_reason="Confused about opposite forces summing to zero",
+        student_language="or"
+    )
+    brief = escalation_engine.generate_teacher_brief(req)
+    assert "suggested_explanation_level" in brief
+    print(f"  ✓ AI Teacher Brief: Generated level -> '{brief['suggested_explanation_level']}'")
+    print(f"  ✓ Pedagogical Hook: {brief['recommended_pedagogical_hook'][:55]}...")
+
+    # Test Instant Connect & Session Room
+    sess_res = escalation_engine.create_instant_escalation(req)
+    assert sess_res["status"] == "success"
+    session_id = sess_res["session"]["id"]
+    print(f"  ✓ Instant Connect: Created active session '{session_id}' with {sess_res['teacher']['name']}")
+
+    # Test Live AI Co-pilot hints for teacher
+    hints = escalation_engine.get_teacher_ai_copilot_hints("Physics", "Newton's Laws", req.original_question)
+    assert len(hints["relevant_ncert_sections"]) > 0
+    print(f"  ✓ AI Co-pilot: Retrieved {len(hints['relevant_ncert_sections'])} NCERT references and {len(hints['detected_misconceptions'])} detected student misconceptions.")
+
+    # Test Session Completion & Post-Session Summary
+    comp_res = escalation_engine.complete_session(session_id, student_rating=5.0)
+    assert comp_res["status"] == "success"
+    assert "post_session_summary" in comp_res
+    print(f"  ✓ Session Completed: Generated post-session summary with {len(comp_res['post_session_summary']['topics_covered'])} topics mastered.")
+
+    # Test Parent Dashboard & Teacher Wallet
+    parent_data = escalation_engine.get_parent_dashboard("std_001")
+    assert parent_data["total_teacher_sessions"] >= 1
+    print(f"  ✓ Parent Dashboard: Child Aarav has {parent_data['total_teacher_sessions']} attended sessions, gain: {parent_data['concept_mastery_gain']}.")
+
+    # Test Admin Emergency Mode
+    is_emergency = escalation_engine.toggle_exam_emergency_mode(True)
+    assert is_emergency is True
+    print(f"  ✓ Exam Emergency Mode: Successfully toggled to {is_emergency} (Priority Matchmaking ON).")
+
     print("\n==================================================================")
-    print("🎉 ALL TESTS PASSED SUCCESSFULLY! SYSTEM IS 100% OPERATIONAL!")
+    print("🎉 ALL TESTS PASSED SUCCESSFULLY! HYBRID PLATFORM 100% OPERATIONAL!")
     print("==================================================================")
+
 
 if __name__ == "__main__":
     run_tests()

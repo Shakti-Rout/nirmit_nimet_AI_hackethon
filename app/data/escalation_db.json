@@ -1,0 +1,533 @@
+{
+  "teachers": {
+    "tch_001": {
+      "id": "tch_001",
+      "name": "Prof. Rashmi Rekha Das",
+      "avatar": "👩‍🏫",
+      "qualification": "M.Sc. Physics (Utkal University), B.Ed",
+      "experience_years": 11,
+      "subjects": [
+        "Physics",
+        "General Science"
+      ],
+      "classes": [
+        "Class 9",
+        "Class 10",
+        "Class 11"
+      ],
+      "languages": [
+        "Odia",
+        "English",
+        "Hindi"
+      ],
+      "rating": 4.95,
+      "total_sessions": 342,
+      "response_time_min": 2,
+      "is_online": true,
+      "price_per_min": 12.0,
+      "price_per_session": 150.0,
+      "emergency_expert": true,
+      "emergency_specialty": "Board Exam Mentor (Odisha BSE)",
+      "bio": "Former State Board Examiner specializing in intuitive mechanics & vernacular visual analogies.",
+      "performance_score": 96.4
+    },
+    "tch_002": {
+      "id": "tch_002",
+      "name": "Karthik Subramanian",
+      "avatar": "👨‍🏫",
+      "qualification": "B.Tech IIT Madras, M.S.",
+      "experience_years": 8,
+      "subjects": [
+        "Mathematics",
+        "Physics"
+      ],
+      "classes": [
+        "Class 9",
+        "Class 10",
+        "Class 11",
+        "Class 12"
+      ],
+      "languages": [
+        "Tamil",
+        "English"
+      ],
+      "rating": 4.91,
+      "total_sessions": 275,
+      "response_time_min": 1,
+      "is_online": true,
+      "price_per_min": 15.0,
+      "price_per_session": 180.0,
+      "emergency_expert": true,
+      "emergency_specialty": "Last Minute Doubt Expert",
+      "bio": "IIT Madras alumnus passionate about deconstructing geometry, calculus & Newton's dynamics.",
+      "performance_score": 94.2
+    },
+    "tch_003": {
+      "id": "tch_003",
+      "name": "Dr. Ananya Roy",
+      "avatar": "👩‍🔬",
+      "qualification": "Ph.D. Biochemistry (Calcutta University)",
+      "experience_years": 9,
+      "subjects": [
+        "Biology",
+        "Chemistry"
+      ],
+      "classes": [
+        "Class 8",
+        "Class 9",
+        "Class 10",
+        "Class 12"
+      ],
+      "languages": [
+        "Bengali",
+        "English",
+        "Hindi"
+      ],
+      "rating": 4.88,
+      "total_sessions": 198,
+      "response_time_min": 3,
+      "is_online": true,
+      "price_per_min": 10.0,
+      "price_per_session": 130.0,
+      "emergency_expert": false,
+      "emergency_specialty": "Fast Revision Expert",
+      "bio": "Expert in life sciences, photosynthesis diagrams, and cellular genetics.",
+      "performance_score": 91.8
+    },
+    "tch_004": {
+      "id": "tch_004",
+      "name": "Srinivas Rao",
+      "avatar": "👨‍💼",
+      "qualification": "M.Sc. Mathematics, Hyderabad",
+      "experience_years": 14,
+      "subjects": [
+        "Mathematics"
+      ],
+      "classes": [
+        "Class 6",
+        "Class 7",
+        "Class 8",
+        "Class 9",
+        "Class 10"
+      ],
+      "languages": [
+        "Telugu",
+        "English"
+      ],
+      "rating": 4.93,
+      "total_sessions": 410,
+      "response_time_min": 2,
+      "is_online": true,
+      "price_per_min": 14.0,
+      "price_per_session": 160.0,
+      "emergency_expert": true,
+      "emergency_specialty": "Board Exam Mentor",
+      "bio": "Specialist in triangle theorems, trigonometry shortcuts, and algebraic equation solving.",
+      "performance_score": 95.7
+    },
+    "tch_005": {
+      "id": "tch_005",
+      "name": "Meera Nambiar",
+      "avatar": "👩‍🏫",
+      "qualification": "M.Sc. Botany (Kerala University)",
+      "experience_years": 6,
+      "subjects": [
+        "Biology",
+        "Environmental Science"
+      ],
+      "classes": [
+        "Class 8",
+        "Class 9",
+        "Class 10"
+      ],
+      "languages": [
+        "Malayalam",
+        "English"
+      ],
+      "rating": 4.86,
+      "total_sessions": 145,
+      "response_time_min": 4,
+      "is_online": false,
+      "price_per_min": 10.0,
+      "price_per_session": 120.0,
+      "emergency_expert": false,
+      "emergency_specialty": "Fast Revision Expert",
+      "bio": "Focuses on interactive biological diagrams, life cycle charts, and plant physiology.",
+      "performance_score": 88.5
+    },
+    "tch_006": {
+      "id": "tch_006",
+      "name": "Pooja Patil",
+      "avatar": "👩‍🎓",
+      "qualification": "B.E. Computer Science, M.Tech Pune",
+      "experience_years": 7,
+      "subjects": [
+        "Computer Science",
+        "Mathematics"
+      ],
+      "classes": [
+        "Class 9",
+        "Class 10",
+        "Class 11",
+        "Class 12"
+      ],
+      "languages": [
+        "Marathi",
+        "Hindi",
+        "English"
+      ],
+      "rating": 4.92,
+      "total_sessions": 230,
+      "response_time_min": 2,
+      "is_online": true,
+      "price_per_min": 12.0,
+      "price_per_session": 150.0,
+      "emergency_expert": true,
+      "emergency_specialty": "Last Minute Doubt Expert",
+      "bio": "Python algorithms, flowchart logic, and step-by-step math problem solving.",
+      "performance_score": 93.6
+    }
+  },
+  "sessions": {
+    "sess_581cdbee85": {
+      "id": "sess_581cdbee85",
+      "student_id": "std_001",
+      "student_name": "Aarav Mohapatra",
+      "teacher_id": "tch_001",
+      "teacher_name": "Prof. Rashmi Rekha Das",
+      "teacher_avatar": "👩‍🏫",
+      "subject": "Physics",
+      "chapter": "Newton Laws",
+      "interaction_mode": "whiteboard",
+      "status": "in_progress",
+      "started_at": 1791988632.5055416,
+      "ended_at": null,
+      "duration_minutes": 15.0,
+      "teacher_brief": {
+        "brief_id": "brief_183d9553",
+        "student_name": "Aarav Mohapatra",
+        "student_grade": "Class 10",
+        "student_language": "or",
+        "subject": "Physics",
+        "chapter": "Newton Laws",
+        "original_question": "Why dont action and reaction cancel?",
+        "ai_attempts": 2,
+        "student_difficulty": "I do not understand why equal forces dont equal zero",
+        "suggested_explanation_level": "Class 10 Beginner Grounding",
+        "recommended_pedagogical_hook": "Draw a free-body diagram showing forces on Object A vs Object B. Remind the student that forces only cancel if they act on the EXACT SAME body!",
+        "generated_at": "2026-10-14 20:07:12"
+      },
+      "whiteboard_data": [
+        {
+          "type": "text",
+          "x": 50,
+          "y": 40,
+          "content": "Session: Physics - Newton Laws",
+          "color": "#38bdf8"
+        },
+        {
+          "type": "text",
+          "x": 50,
+          "y": 70,
+          "content": "Doubt: Why dont action and reaction cancel?",
+          "color": "#facc15"
+        }
+      ],
+      "chat_transcript": [
+        {
+          "sender": "system",
+          "time": "20:07",
+          "text": "Connected to Prof. Rashmi Rekha Das. AI Teacher Brief dispatched."
+        },
+        {
+          "sender": "teacher",
+          "time": "20:07",
+          "text": "Namaste Aarav Mohapatra! I have reviewed your question and the AI brief. Let's solve this together on the whiteboard!"
+        }
+      ],
+      "student_rating": null,
+      "student_review": null,
+      "session_fee": 150.0,
+      "platform_commission": 30.0,
+      "teacher_payout": 120.0,
+      "post_session_summary": null
+    },
+    "sess_981043050b": {
+      "id": "sess_981043050b",
+      "student_id": "std_001",
+      "student_name": "Aarav Mohapatra",
+      "teacher_id": "tch_001",
+      "teacher_name": "Prof. Rashmi Rekha Das",
+      "teacher_avatar": "👩‍🏫",
+      "subject": "Physics",
+      "chapter": "Newton's Laws of Motion",
+      "interaction_mode": "whiteboard",
+      "status": "completed",
+      "started_at": 1791989591.2541611,
+      "ended_at": 1791989591.2567844,
+      "duration_minutes": 15.0,
+      "teacher_brief": {
+        "brief_id": "brief_602bd25b",
+        "student_name": "Aarav Mohapatra",
+        "student_grade": "Class 10",
+        "student_language": "or",
+        "subject": "Physics",
+        "chapter": "Newton's Laws of Motion",
+        "original_question": "Why do action and reaction forces never cancel?",
+        "ai_attempts": 2,
+        "student_difficulty": "Confused about opposite forces summing to zero",
+        "suggested_explanation_level": "Class 10 Beginner Grounding",
+        "recommended_pedagogical_hook": "Draw a free-body diagram showing forces on Object A vs Object B. Remind the student that forces only cancel if they act on the EXACT SAME body!",
+        "generated_at": "2026-10-14 20:23:11"
+      },
+      "whiteboard_data": [
+        {
+          "type": "text",
+          "x": 50,
+          "y": 40,
+          "content": "Session: Physics - Newton's Laws of Motion",
+          "color": "#38bdf8"
+        },
+        {
+          "type": "text",
+          "x": 50,
+          "y": 70,
+          "content": "Doubt: Why do action and reaction forces never cancel?",
+          "color": "#facc15"
+        }
+      ],
+      "chat_transcript": [
+        {
+          "sender": "system",
+          "time": "20:23",
+          "text": "Connected to Prof. Rashmi Rekha Das. AI Teacher Brief dispatched."
+        },
+        {
+          "sender": "teacher",
+          "time": "20:23",
+          "text": "Namaste Aarav Mohapatra! I have reviewed your question and the AI brief. Let's solve this together on the whiteboard!"
+        }
+      ],
+      "student_rating": 5.0,
+      "student_review": "Teacher explained with great visual drawings!",
+      "session_fee": 150.0,
+      "platform_commission": 30.0,
+      "teacher_payout": 120.0,
+      "post_session_summary": {
+        "session_id": "sess_981043050b",
+        "topics_covered": [
+          "Physics",
+          "Newton's Laws of Motion",
+          "Free Body Diagrams",
+          "Action-Reaction Pair Analysis"
+        ],
+        "mistakes_identified": "Confusing internal vs external force cancellation.",
+        "concepts_mastered": [
+          "Newton's Third Law",
+          "Vector direction of pairs"
+        ],
+        "homework_recommended": [
+          "Solve NCERT Chapter 9 Exercise Questions 4, 7 and 12.",
+          "Draw action-reaction diagram for swimming in water."
+        ],
+        "revision_plan": "Review notes after 24 hours; take 5-question adaptive quiz in Student Portal."
+      }
+    }
+  },
+  "wallets": {
+    "tch_001": {
+      "teacher_id": "tch_001",
+      "total_earnings": 14620.0,
+      "pending_earnings": 1320.0,
+      "withdrawn_earnings": 13300.0,
+      "total_sessions_completed": 343,
+      "incentive_bonus": 850.0,
+      "transactions": [
+        {
+          "id": "tx_101",
+          "date": "2026-10-12",
+          "amount": 120.0,
+          "type": "session_payout",
+          "status": "completed"
+        },
+        {
+          "id": "tx_102",
+          "date": "2026-10-13",
+          "amount": 144.0,
+          "type": "session_payout",
+          "status": "completed"
+        },
+        {
+          "id": "tx_103",
+          "date": "2026-10-14",
+          "amount": 5000.0,
+          "type": "withdrawal_upi",
+          "status": "processed"
+        },
+        {
+          "id": "tx_1a9520",
+          "date": "2026-10-14",
+          "amount": 120.0,
+          "type": "session_050b",
+          "status": "completed"
+        }
+      ]
+    },
+    "tch_002": {
+      "teacher_id": "tch_002",
+      "total_earnings": 14500.0,
+      "pending_earnings": 1200.0,
+      "withdrawn_earnings": 13300.0,
+      "total_sessions_completed": 275,
+      "incentive_bonus": 850.0,
+      "transactions": [
+        {
+          "id": "tx_101",
+          "date": "2026-10-12",
+          "amount": 120.0,
+          "type": "session_payout",
+          "status": "completed"
+        },
+        {
+          "id": "tx_102",
+          "date": "2026-10-13",
+          "amount": 144.0,
+          "type": "session_payout",
+          "status": "completed"
+        },
+        {
+          "id": "tx_103",
+          "date": "2026-10-14",
+          "amount": 5000.0,
+          "type": "withdrawal_upi",
+          "status": "processed"
+        }
+      ]
+    },
+    "tch_003": {
+      "teacher_id": "tch_003",
+      "total_earnings": 14500.0,
+      "pending_earnings": 1200.0,
+      "withdrawn_earnings": 13300.0,
+      "total_sessions_completed": 198,
+      "incentive_bonus": 850.0,
+      "transactions": [
+        {
+          "id": "tx_101",
+          "date": "2026-10-12",
+          "amount": 120.0,
+          "type": "session_payout",
+          "status": "completed"
+        },
+        {
+          "id": "tx_102",
+          "date": "2026-10-13",
+          "amount": 144.0,
+          "type": "session_payout",
+          "status": "completed"
+        },
+        {
+          "id": "tx_103",
+          "date": "2026-10-14",
+          "amount": 5000.0,
+          "type": "withdrawal_upi",
+          "status": "processed"
+        }
+      ]
+    },
+    "tch_004": {
+      "teacher_id": "tch_004",
+      "total_earnings": 14500.0,
+      "pending_earnings": 1200.0,
+      "withdrawn_earnings": 13300.0,
+      "total_sessions_completed": 410,
+      "incentive_bonus": 850.0,
+      "transactions": [
+        {
+          "id": "tx_101",
+          "date": "2026-10-12",
+          "amount": 120.0,
+          "type": "session_payout",
+          "status": "completed"
+        },
+        {
+          "id": "tx_102",
+          "date": "2026-10-13",
+          "amount": 144.0,
+          "type": "session_payout",
+          "status": "completed"
+        },
+        {
+          "id": "tx_103",
+          "date": "2026-10-14",
+          "amount": 5000.0,
+          "type": "withdrawal_upi",
+          "status": "processed"
+        }
+      ]
+    },
+    "tch_005": {
+      "teacher_id": "tch_005",
+      "total_earnings": 14500.0,
+      "pending_earnings": 1200.0,
+      "withdrawn_earnings": 13300.0,
+      "total_sessions_completed": 145,
+      "incentive_bonus": 850.0,
+      "transactions": [
+        {
+          "id": "tx_101",
+          "date": "2026-10-12",
+          "amount": 120.0,
+          "type": "session_payout",
+          "status": "completed"
+        },
+        {
+          "id": "tx_102",
+          "date": "2026-10-13",
+          "amount": 144.0,
+          "type": "session_payout",
+          "status": "completed"
+        },
+        {
+          "id": "tx_103",
+          "date": "2026-10-14",
+          "amount": 5000.0,
+          "type": "withdrawal_upi",
+          "status": "processed"
+        }
+      ]
+    },
+    "tch_006": {
+      "teacher_id": "tch_006",
+      "total_earnings": 14500.0,
+      "pending_earnings": 1200.0,
+      "withdrawn_earnings": 13300.0,
+      "total_sessions_completed": 230,
+      "incentive_bonus": 850.0,
+      "transactions": [
+        {
+          "id": "tx_101",
+          "date": "2026-10-12",
+          "amount": 120.0,
+          "type": "session_payout",
+          "status": "completed"
+        },
+        {
+          "id": "tx_102",
+          "date": "2026-10-13",
+          "amount": 144.0,
+          "type": "session_payout",
+          "status": "completed"
+        },
+        {
+          "id": "tx_103",
+          "date": "2026-10-14",
+          "amount": 5000.0,
+          "type": "withdrawal_upi",
+          "status": "processed"
+        }
+      ]
+    }
+  },
+  "exam_emergency_mode": true
+}

@@ -9,6 +9,62 @@
 </head>
 <body>
 
+  <section class="login-page" id="loginPage">
+    <div class="auth-wrapper">
+      <div class="auth-header">
+        <div class="brand-logo login-brand"><span>🚀</span><span>Prerana AI</span></div>
+        <h2>Welcome back</h2>
+        <p>Choose your portal and sign in to continue learning.</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="role-cards-grid" role="group" aria-label="Choose your account type" style="grid-template-columns: repeat(4, 1fr);">
+          <button class="role-card-picker selected" type="button" data-login-role="student" aria-pressed="true">
+            <div class="role-icon">🎓</div>
+            <strong>Student</strong>
+            <span>Learn and ask doubts</span>
+          </button>
+          <button class="role-card-picker" type="button" data-login-role="teacher" aria-pressed="false">
+            <div class="role-icon">👨‍🏫</div>
+            <strong>Teacher</strong>
+            <span>Classes & Wallet</span>
+          </button>
+          <button class="role-card-picker" type="button" data-login-role="parent" aria-pressed="false">
+            <div class="role-icon">👨‍👩‍👧</div>
+            <strong>Parent</strong>
+            <span>Child visibility</span>
+          </button>
+          <button class="role-card-picker" type="button" data-login-role="admin" aria-pressed="false">
+            <div class="role-icon">🛡️</div>
+            <strong>Admin</strong>
+            <span>Metrics & Emergency</span>
+          </button>
+        </div>
+        <input type="hidden" id="loginRole" value="student">
+
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input class="form-control" id="loginEmail" type="email" autocomplete="username" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <input class="form-control" id="loginPassword" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+        </div>
+        <p class="login-error" id="loginError" role="alert" hidden></p>
+        <button class="btn btn-primary login-submit" id="loginSubmit" type="submit">Sign in</button>
+      </form>
+
+      <p class="demo-credentials">
+        Demo accounts:
+        <span>student@prerana.ai</span>
+        <span>teacher@prerana.ai</span>
+        <span>parent@prerana.ai</span>
+        <span>admin@prerana.ai</span>
+      </p>
+    </div>
+  </section>
+
+  <div id="appShell" hidden>
   <!-- OFFLINE ALERT BANNER -->
   <div class="offline-banner" id="offlineBanner" style="display: none;">
     <div style="display: flex; align-items: center; gap: 8px;">
@@ -39,13 +95,22 @@
         <span>👨‍🏫</span>
         <span id="tabTeacherText">Teacher Portal</span>
       </button>
-      <button class="role-tab-btn" data-role="developer">
+      <button class="role-tab-btn" data-role="parent">
+        <span>👨‍👩‍👧</span>
+        <span>Parent Portal</span>
+      </button>
+      <button class="role-tab-btn" data-role="admin">
         <span>💻</span>
-        <span id="tabDevText">Developer & Evaluator</span>
+        <span id="tabAdminText">Admin Portal</span>
       </button>
     </div>
 
     <div class="nav-controls">
+      <!-- LIVE TEACHER MARKETPLACE BUTTON (ASTROTALK ESCALATION) -->
+      <button class="btn btn-accent btn-sm" id="openMarketplaceBtn" style="background: linear-gradient(135deg, #f59e0b, #ea580c);">
+        👩‍🏫 Live Teachers
+      </button>
+
       <!-- LANGUAGE SWITCHER (English, Odia, Tamil, Telugu, Kannada, Malayalam) -->
       <select class="custom-select" id="langSelect" title="Select Regional Language">
         <option value="or" selected>🇮🇳 ଓଡ଼ିଆ (Odia)</option>
@@ -71,6 +136,7 @@
       <button class="btn btn-secondary btn-sm" id="pitchDeckBtn">
         📊 <span id="pitchDeckBtnText">Pitch Deck & Checkpoint</span>
       </button>
+      <button class="btn btn-secondary btn-sm" id="logoutBtn">Sign out</button>
     </div>
   </header>
 
@@ -89,8 +155,8 @@
               <span>👤 Learner Profile</span>
               <span class="hackathon-pill" style="font-size:0.7rem;">Class 10</span>
             </div>
-            <div style="font-weight: 700; font-size: 1.05rem; color: #f8fafc;">Aarav Mohapatra</div>
-            <div style="font-size: 0.85rem; color: #38bdf8; margin-bottom: 0.8rem;">Govt High School, Khordha (ଓଡ଼ିଶା)</div>
+            <div id="studentDisplayName" style="font-weight: 700; font-size: 1.05rem; color: #f8fafc;">Aarav Mohapatra</div>
+            <div id="studentDisplaySchool" style="font-size: 0.85rem; color: #38bdf8; margin-bottom: 0.8rem;">Govt High School, Khordha (ଓଡ଼ିଶା)</div>
             <div style="background: rgba(15, 23, 42, 0.6); padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; border-left: 3px solid #818cf8; margin-bottom: 1rem;">
               <strong>Active Goal:</strong> Master Newton's Laws with Vernacular Scaffolding
             </div>
@@ -288,11 +354,125 @@
           </div>
         </div>
 
+        <!-- TEACHER WALLET & EARNINGS (FEATURE 11 - ASTROTALK MONETIZATION) -->
+        <div class="glass-card">
+          <div class="card-title">
+            <span>💰 Teacher Earnings & Wallet (Astrotalk Model)</span>
+            <span class="hackathon-pill">80% Payout</span>
+          </div>
+          <div class="wallet-balance-card">
+            <div>
+              <div style="font-size: 0.8rem; color: #a5b4fc; text-transform: uppercase;">Total Lifetime Earnings</div>
+              <div class="wallet-number" id="walletTotalEarnings">₹14,500</div>
+              <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 4px;">
+                Pending Payout: <strong style="color: #facc15;" id="walletPendingEarnings">₹1,200</strong>
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="alert('Withdrawal request of ₹1,200 submitted to UPI (Instant settlement).')">
+              Withdraw to UPI
+            </button>
+          </div>
+
+          <div style="font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #f8fafc;">Recent Session Revenues:</div>
+          <div style="font-size: 0.8rem; color: #cbd5e1; display: flex; flex-direction: column; gap: 6px;" id="walletTxList">
+            <div style="background: rgba(15,23,42,0.6); padding: 6px 10px; border-radius: 6px; display: flex; justify-content: space-between;">
+              <span>15 min Doubt - Newton's Laws (Aarav M.)</span>
+              <span style="color: #34d399; font-weight: bold;">+₹120.00</span>
+            </div>
+            <div style="background: rgba(15,23,42,0.6); padding: 6px 10px; border-radius: 6px; display: flex; justify-content: space-between;">
+              <span>15 min Doubt - Pythagoras 3D (Rahul S.)</span>
+              <span style="color: #34d399; font-weight: bold;">+₹144.00</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEACHER PERFORMANCE LEADERBOARD (FEATURE 12) -->
+        <div class="glass-card">
+          <div class="card-title">
+            <span>🏆 Teacher Performance Leaderboard</span>
+            <span class="hackathon-pill">Top Ranked</span>
+          </div>
+          <table class="leaderboard-table" id="leaderboardTable">
+            <thead>
+              <tr>
+                <th>Teacher</th>
+                <th>Rating</th>
+                <th>Sessions</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
       </div>
     </section>
 
     <!-- ============================================================ -->
-    <!-- 3. DEVELOPER & EVALUATOR PORTAL -->
+    <!-- 2B. PARENT PORTAL (FEATURE 10 - PARENT VISIBILITY) -->
+    <!-- ============================================================ -->
+    <section class="portal-panel" id="parentPortal">
+      <div class="dashboard-grid">
+        <div class="glass-card full-width">
+          <div class="card-title">
+            <span>👨‍👩‍👧 Parent Visibility Dashboard: Child Consultation & Progress</span>
+            <span class="hackathon-pill">Aarav Mohapatra (Class 10)</span>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-label">Total Live Sessions</div>
+              <div class="stat-number">4</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Time with Teachers</div>
+              <div class="stat-number">60 min</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Consultation Spend</div>
+              <div class="stat-number">₹600</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Concept Improvement</div>
+              <div class="stat-number" style="color: #10b981;">+28%</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem;">
+            <h4 style="color: #818cf8; margin-bottom: 10px;">📋 Attended Teacher Consultations & Outcomes:</h4>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <div style="background: rgba(15,23,42,0.7); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px;">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong>Prof. Rashmi Rekha Das (Physics)</strong>
+                  <span style="color: #facc15;">⭐⭐⭐⭐⭐ (5.0)</span>
+                </div>
+                <div style="font-size: 0.85rem; color: #94a3b8; margin: 4px 0;">Duration: 15 minutes • Mode: Shared Whiteboard</div>
+                <div style="font-size: 0.85rem; color: #e2e8f0;">
+                  <strong>Outcome:</strong> Resolved misconception regarding action-reaction cancellation. Student drew Chilika boat free-body diagrams.
+                </div>
+              </div>
+
+              <div style="background: rgba(15,23,42,0.7); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px;">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong>Karthik Subramanian (Mathematics)</strong>
+                  <span style="color: #facc15;">⭐⭐⭐⭐⭐ (4.9)</span>
+                </div>
+                <div style="font-size: 0.85rem; color: #94a3b8; margin: 4px 0;">Duration: 15 minutes • Mode: Video & Whiteboard</div>
+                <div style="font-size: 0.85rem; color: #e2e8f0;">
+                  <strong>Outcome:</strong> Mastered 3D diagonal shortcuts for right-angled triangles.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================================ -->
+    <!-- 3. ADMIN PORTAL -->
     <!-- ============================================================ -->
     <section class="portal-panel" id="developerPortal">
       <div class="dashboard-grid">
@@ -383,10 +563,50 @@
           </div>
         </div>
 
+        <!-- ASTROTALK ESCALATION SYSTEM & EXAM EMERGENCY MODE (FEATURE 13, 15) -->
+        <div class="glass-card full-width">
+          <div class="card-title">
+            <span>🛡️ Escalation System Analytics & Exam Emergency Mode</span>
+            <span class="hackathon-pill">Astrotalk Model</span>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="stat-label">AI-to-Human Rate</div>
+              <div class="stat-number" style="color: #38bdf8;">14.2%</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Total Completed Sessions</div>
+              <div class="stat-number">252</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Gross Revenue</div>
+              <div class="stat-number" style="color: #34d399;">₹37,800</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Platform Margin (20%)</div>
+              <div class="stat-number" style="color: #a855f7;">₹7,560</div>
+            </div>
+          </div>
+
+          <div style="background: rgba(15,23,42,0.6); padding: 1.2rem; border-radius: 10px; border: 1px solid var(--card-border); margin-top: 1rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <strong style="color: #ef4444; font-size: 1.05rem;">🚨 Exam Emergency Mode (48 Hours Before Board Exams)</strong>
+              <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 4px;">
+                Activates Priority Matchmaking with Fast Revision Experts, Last Minute Doubt Experts, and Board Exam Mentors.
+              </p>
+            </div>
+            <button class="btn btn-primary" id="toggleEmergencyBtn" onclick="window.app.toggleEmergencyMode()">
+              Toggle Emergency Mode: <span id="emergencyStatusLabel" style="font-weight:bold; color:#facc15;">OFF</span>
+            </button>
+          </div>
+        </div>
+
       </div>
     </section>
 
   </main>
+  </div>
 
   <!-- ============================================================ -->
   <!-- 4. PITCH DECK & MID-EVALUATION CHECKPOINT MODAL -->
@@ -417,6 +637,206 @@
       </div>
     </div>
   </div>
+
+  <!-- ============================================================ -->
+  <!-- 5. LIVE TEACHER MARKETPLACE MODAL (FEATURE 3, 4, 5, 14) -->
+  <!-- ============================================================ -->
+  <div class="modal-overlay" id="marketplaceModal">
+    <div class="modal-content" style="max-width: 1050px;">
+      <button class="modal-close" id="closeMarketplaceBtn" onclick="document.getElementById('marketplaceModal').classList.remove('active')">&times;</button>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 0.8rem;">
+        <div>
+          <h2 style="font-size: 1.4rem; color: #f8fafc;">👩‍🏫 Live Expert Teacher Marketplace</h2>
+          <div style="font-size: 0.85rem; color: #38bdf8;">Astrotalk-style on-demand consultations with verified educators</div>
+        </div>
+        <button class="btn btn-accent btn-sm" id="uberBroadcastBtn" onclick="window.app.handleUberBroadcast()" style="background: linear-gradient(135deg, #f59e0b, #ea580c);">
+          ⚡ Instant Connect (Auto-Match Best Teacher)
+        </button>
+      </div>
+
+      <!-- FILTER BAR -->
+      <div style="display: flex; gap: 10px; margin-top: 1rem; flex-wrap: wrap;">
+        <select class="custom-select" id="marketFilterSubject" onchange="window.app.loadMarketplace()">
+          <option value="All">All Subjects</option>
+          <option value="Physics">Physics</option>
+          <option value="Mathematics">Mathematics</option>
+          <option value="Biology">Biology</option>
+          <option value="Chemistry">Chemistry</option>
+          <option value="Computer Science">Computer Science</option>
+        </select>
+
+        <select class="custom-select" id="marketFilterLang" onchange="window.app.loadMarketplace()">
+          <option value="All">All Languages</option>
+          <option value="Odia">🇮🇳 Odia (ଓଡ଼ିଆ)</option>
+          <option value="English">🇬🇧 English</option>
+          <option value="Tamil">🇮🇳 Tamil (தமிழ்)</option>
+          <option value="Telugu">🇮🇳 Telugu (తెలుగు)</option>
+          <option value="Malayalam">🇮🇳 Malayalam (മലയാളം)</option>
+          <option value="Marathi">🇮🇳 Marathi</option>
+          <option value="Bengali">🇮🇳 Bengali</option>
+        </select>
+
+        <select class="custom-select" id="marketFilterClass" onchange="window.app.loadMarketplace()">
+          <option value="All">All Classes (6-12)</option>
+          <option value="Class 9">Class 9</option>
+          <option value="Class 10">Class 10</option>
+          <option value="Class 11">Class 11</option>
+          <option value="Class 12">Class 12</option>
+        </select>
+      </div>
+
+      <!-- TEACHERS GRID -->
+      <div class="marketplace-grid" id="marketplaceGrid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 6. LIVE INTERACTION ROOM MODAL (FEATURE 6, 8, 9) -->
+  <!-- ============================================================ -->
+  <div class="modal-overlay" id="sessionRoomModal">
+    <div class="modal-content" style="max-width: 1200px; padding: 1.2rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 0.6rem; margin-bottom: 0.8rem;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div class="teacher-avatar-lg" id="roomTeacherAvatar">👩‍🏫</div>
+          <div>
+            <div style="font-weight: 700; font-size: 1.1rem; color: #f8fafc;" id="roomTeacherName">Prof. Rashmi Rekha Das</div>
+            <div style="font-size: 0.8rem; color: #38bdf8;" id="roomSessionTopic">Physics - Newton's Laws • Live 1-on-1 Consultation</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="font-size: 1rem; font-weight: bold; color: #facc15; background: rgba(0,0,0,0.4); padding: 6px 12px; border-radius: 8px;">
+            ⏱️ <span id="sessionTimer">14:55</span>
+          </div>
+          <button class="btn btn-sm" style="background: #ef4444; color: white;" onclick="window.app.endLiveSession()">
+            End Session
+          </button>
+        </div>
+      </div>
+
+      <div class="session-room-container">
+        <!-- MAIN STAGE -->
+        <div class="session-main-stage">
+          <div class="session-mode-nav">
+            <button class="mode-tab-btn active" data-mode="whiteboard" onclick="window.app.switchSessionMode('whiteboard')">
+              🎨 Shared Whiteboard
+            </button>
+            <button class="mode-tab-btn" data-mode="video" onclick="window.app.switchSessionMode('video')">
+              📹 Video Call
+            </button>
+            <button class="mode-tab-btn" data-mode="audio" onclick="window.app.switchSessionMode('audio')">
+              🎙️ Audio Call
+            </button>
+            <button class="mode-tab-btn" data-mode="chat" onclick="window.app.switchSessionMode('chat')">
+              💬 Chat Only
+            </button>
+          </div>
+
+          <!-- STAGE VIEWPORT -->
+          <div class="stage-viewport" id="stageViewport">
+            <!-- WHITEBOARD TOOLBAR -->
+            <div class="whiteboard-toolbar" id="wbToolbar">
+              <button class="wb-tool-btn active" title="Pen Draw" onclick="window.app.setWbTool('pen')">✏️</button>
+              <button class="wb-tool-btn" title="Draw Rectangle" onclick="window.app.setWbTool('rect')">⬜</button>
+              <button class="wb-tool-btn" title="Draw Circle" onclick="window.app.setWbTool('circle')">⭕</button>
+              <button class="wb-tool-btn" title="Add Math Formula" onclick="window.app.addWbFormula()">∑</button>
+              <button class="wb-tool-btn" title="Eraser" onclick="window.app.setWbTool('eraser')">🧹</button>
+              <button class="wb-tool-btn" title="Clear Canvas" onclick="window.app.clearWb()">🗑️</button>
+            </div>
+            <canvas id="whiteboardCanvas" width="750" height="540"></canvas>
+
+            <!-- SIMULATED VIDEO / AUDIO STAGE -->
+            <div id="videoStage" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:#0f172a; flex-direction:column; align-items:center; justify-content:center; gap:16px;">
+              <div style="font-size: 5rem;" id="videoAvatar">👩‍🏫</div>
+              <div style="font-size: 1.1rem; color: #e2e8f0;" id="videoTeacherTitle">Live Video Feed: Prof. Rashmi Rekha Das</div>
+              <div class="audio-pulse">
+                <span class="audio-bar" style="height:28px;"></span>
+                <span class="audio-bar" style="height:44px;"></span>
+                <span class="audio-bar" style="height:32px;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR: AI CO-PILOT ASSISTANT & CHAT -->
+        <div class="copilot-panel">
+          <div class="card-title" style="margin-bottom: 0.6rem;">
+            <span>🤖 AI Co-Pilot (Teacher Assistant)</span>
+          </div>
+
+          <div class="copilot-card">
+            <strong style="color: #38bdf8;">📖 NCERT Syllabus Reference:</strong>
+            <div style="font-size: 0.78rem; color: #cbd5e1; margin-top: 2px;">
+              NCERT Class 9, Chapter 9 (Page 121-124): Forces act on two distinct bodies.
+            </div>
+          </div>
+
+          <div class="copilot-card" style="border-left-color: #ef4444;">
+            <strong style="color: #f87171;">⚠️ Detected Misconception:</strong>
+            <div style="font-size: 0.78rem; color: #cbd5e1; margin-top: 2px;">
+              Student believes forces cancel because they are equal and opposite.
+            </div>
+          </div>
+
+          <div class="copilot-card" style="border-left-color: #10b981;">
+            <strong style="color: #34d399;">💡 Suggested Pedagogical Remedy:</strong>
+            <div style="font-size: 0.78rem; color: #cbd5e1; margin-top: 2px;">
+              Draw two separate objects (A & B) on whiteboard. Ask: "Which object does the oar push? Which object does the water push?"
+            </div>
+          </div>
+
+          <!-- SESSION CHAT -->
+          <div style="font-weight: 600; font-size: 0.85rem; margin-top: 10px; margin-bottom: 4px; color: #f8fafc;">Live Session Chat:</div>
+          <div id="sessionChatLog" style="flex:1; background:rgba(0,0,0,0.3); border-radius:6px; padding:8px; overflow-y:auto; font-size:0.8rem; display:flex; flex-direction:column; gap:6px;">
+            <div style="color: #a5b4fc;">[System]: AI Brief dispatched to teacher. Session active.</div>
+            <div style="color: #38bdf8;"><strong>Teacher:</strong> Namaste Aarav! Look at the whiteboard, I am sketching the boat oars.</div>
+          </div>
+          <div style="display:flex; gap:6px; margin-top:6px;">
+            <input type="text" class="form-control" id="sessionChatInput" placeholder="Message teacher..." style="padding:6px 10px; font-size:0.82rem;" onkeydown="if(event.key==='Enter') window.app.sendSessionChatMessage()" />
+            <button class="btn btn-primary btn-sm" onclick="window.app.sendSessionChatMessage()">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 7. POST-SESSION STUDENT LEARNING SUMMARY (FEATURE 9) -->
+  <!-- ============================================================ -->
+  <div class="modal-overlay" id="sessionSummaryModal">
+    <div class="modal-content" style="max-width: 650px;">
+      <button class="modal-close" onclick="document.getElementById('sessionSummaryModal').classList.remove('active')">&times;</button>
+      <div style="text-align: center; margin-bottom: 1.2rem;">
+        <div style="font-size: 3rem;">🎉</div>
+        <h2 style="color: #38bdf8; font-size: 1.5rem;">Live Consultation Completed!</h2>
+        <p style="font-size: 0.85rem; color: #94a3b8;">Here is your AI-generated Post-Session Learning Summary</p>
+      </div>
+
+      <div style="background: rgba(15,23,42,0.8); border: 1px solid var(--card-border); border-radius: 10px; padding: 1.2rem; font-size: 0.88rem; line-height: 1.6;">
+        <h4 style="color: #818cf8; margin-bottom: 6px;">📝 Topics Mastered:</h4>
+        <p id="sumTopics">Newton's Third Law of Motion, Action-Reaction Non-Cancellation, Free-Body Diagrams</p>
+
+        <h4 style="color: #f87171; margin-top: 10px; margin-bottom: 6px;">💡 Misconception Corrected:</h4>
+        <p id="sumMistakes">Forces acting on different bodies never cancel each other out.</p>
+
+        <h4 style="color: #34d399; margin-top: 10px; margin-bottom: 6px;">📚 Recommended Homework:</h4>
+        <p id="sumHomework">NCERT Class 9 Chapter 9 Questions 4 & 7. Take 5-question adaptive quiz in Student Portal.</p>
+      </div>
+
+      <div style="margin-top: 1.2rem; text-align: center;">
+        <div style="font-weight: 600; margin-bottom: 6px;">Rate this session with teacher:</div>
+        <div style="font-size: 1.8rem; cursor: pointer;" id="starRating">
+          ⭐⭐⭐⭐⭐
+        </div>
+        <button class="btn btn-primary" style="margin-top: 12px; width: 100%;" onclick="document.getElementById('sessionSummaryModal').classList.remove('active'); alert('Feedback and session summary saved to your profile!')">
+          Close & Save to Profile
+        </button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- SCRIPTS -->
   <script src="/static/js/speech.js"></script>

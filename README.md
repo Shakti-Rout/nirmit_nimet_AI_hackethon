@@ -57,7 +57,9 @@ Full dynamic interface translation, prompt steering, and voice synthesis for:
   - Predefined finite state machine with strict rule nodes.
   - Guaranteed zero token latency, full auditability, and 100% offline edge execution.
 
-### 5. 👥 3 Separate Role Portals
+### 5. 👥 Role-Based Login & Portals
+- Landing-page sign-in with separate **Student**, **Teacher**, and **Admin** roles.
+- Sign-in validates the selected role against the account before opening its portal.
 - **🎓 Student Portal**:
   - Interactive voice/text companion with real-time decision trace inspection.
   - Adaptive diagnostic challenge with instant misconception feedback.
@@ -66,7 +68,7 @@ Full dynamic interface translation, prompt steering, and voice synthesis for:
   - Curriculum RAG Ingestion (PDF / text upload into vector store).
   - Autonomous Regional Lesson Plan Generator.
   - Classroom diagnostic heatmap (identifies at-risk learners and struggle concepts).
-- **💻 Developer & Evaluator Portal**:
+- **🛡️ Admin Portal**:
   - Architectural framework switcher (toggle between Autonomous and Deterministic).
   - Live execution trace and latency telemetry.
   - Direct RAG vector store search explorer with cosine scores.
@@ -95,6 +97,15 @@ Or with Uvicorn:
 uvicorn app.main:app --host 127.0.0.1 --port 8000
 ```
 Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)** in your browser.
+
+### Demo Sign-ins
+Select the matching role on the landing page, then use one of these accounts:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Student | `student@prerana.ai` | `learn123` |
+| Teacher | `teacher@prerana.ai` | `teach123` |
+| Admin | `admin@prerana.ai` | `admin123` |
 
 ### 2. Run the Comprehensive Test Suite
 ```bash

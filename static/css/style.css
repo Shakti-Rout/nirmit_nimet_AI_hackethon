@@ -109,6 +109,10 @@ body {
   gap: 6px;
 }
 
+.role-tab-btn[hidden] {
+  display: none;
+}
+
 .role-tab-btn.active {
   background: var(--primary);
   color: white;
@@ -240,14 +244,48 @@ select.custom-select {
   backdrop-filter: blur(16px);
 }
 
+#appShell[hidden],
+#loginPage[hidden] {
+  display: none !important;
+}
+
+.login-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background:
+    radial-gradient(ellipse at top, rgba(99, 102, 241, 0.16), transparent 55%),
+    var(--bg-gradient);
+}
+
+.login-page .auth-wrapper {
+  width: min(100%, 650px);
+  margin: 0;
+}
+
 .auth-header {
   text-align: center;
   margin-bottom: 2rem;
 }
 
+.login-brand {
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
 .auth-header h2 {
   font-size: 1.8rem;
   margin-bottom: 0.5rem;
+}
+
+.auth-header p,
+.role-card-picker span,
+.demo-credentials {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
 }
 
 .role-cards-grid {
@@ -258,6 +296,7 @@ select.custom-select {
 }
 
 .role-card-picker {
+  color: var(--text-primary);
   background: rgba(15, 23, 42, 0.6);
   border: 2px solid var(--card-border);
   border-radius: 10px;
@@ -267,9 +306,20 @@ select.custom-select {
   transition: all 0.2s ease;
 }
 
+.role-card-picker span {
+  display: block;
+  margin-top: 0.35rem;
+  line-height: 1.4;
+}
+
 .role-card-picker:hover {
   border-color: var(--primary-light);
   transform: translateY(-2px);
+}
+
+.role-card-picker:focus-visible {
+  outline: 2px solid #a5b4fc;
+  outline-offset: 2px;
 }
 
 .role-card-picker.selected {
@@ -310,6 +360,28 @@ select.custom-select {
 .form-control:focus {
   border-color: var(--primary-light);
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.login-submit {
+  width: 100%;
+  padding: 11px 16px;
+  margin-top: 0.25rem;
+}
+
+.login-error {
+  color: #fca5a5;
+  font-size: 0.85rem;
+  margin: -0.3rem 0 0.9rem;
+}
+
+.demo-credentials {
+  margin-top: 1.25rem;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.demo-credentials span {
+  display: block;
 }
 
 /* PORTAL PANELS */
@@ -812,3 +884,310 @@ select.custom-select {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   AI-TO-LIVE TEACHER ESCALATION & MARKETPLACE STYLING (Astrotalk Model)
+   ========================================================================== */
+
+/* CONFIDENCE CHECK BAR */
+.confidence-check-bar {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--card-border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.escalation-trigger-btn {
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 10px rgba(245, 158, 11, 0.3);
+  transition: transform 0.2s ease;
+}
+
+.escalation-trigger-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+/* AI TEACHER BRIEF CARD */
+.teacher-brief-box {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(129, 140, 248, 0.4);
+  border-radius: 12px;
+  padding: 1.2rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.brief-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.brief-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  font-size: 0.82rem;
+  margin-bottom: 0.8rem;
+}
+
+.brief-meta-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
+/* TEACHER MARKETPLACE CARDS */
+.marketplace-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+
+.teacher-card {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.teacher-card:hover {
+  border-color: var(--primary-light);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.teacher-card-top {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 0.8rem;
+}
+
+.teacher-avatar-lg {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #06b6d4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  flex-shrink: 0;
+}
+
+.teacher-online-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: absolute;
+  top: 1.2rem;
+  right: 1.2rem;
+}
+
+.teacher-online-dot.online { background: #10b981; box-shadow: 0 0 8px #10b981; }
+.teacher-online-dot.offline { background: #64748b; }
+
+.lang-chip {
+  background: rgba(99, 102, 241, 0.2);
+  color: #a5b4fc;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-block;
+  margin-right: 4px;
+  margin-top: 4px;
+}
+
+.emergency-badge {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.price-tag {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #38bdf8;
+}
+
+/* LIVE INTERACTION ROOM MODAL */
+.session-room-container {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 1.2rem;
+  height: 680px;
+}
+
+.session-main-stage {
+  display: flex;
+  flex-direction: column;
+  background: #0f172a;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  overflow: hidden;
+}
+
+.session-mode-nav {
+  display: flex;
+  background: rgba(15, 23, 42, 0.95);
+  border-bottom: 1px solid var(--card-border);
+  padding: 8px 12px;
+  gap: 8px;
+}
+
+.mode-tab-btn {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  color: var(--text-secondary);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mode-tab-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary-light);
+}
+
+.stage-viewport {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #020617;
+  overflow: hidden;
+}
+
+/* WHITEBOARD CANVAS & TOOLBAR */
+.whiteboard-toolbar {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--card-border);
+  border-radius: 30px;
+  padding: 6px 14px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.wb-tool-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.wb-tool-btn.active {
+  background: var(--primary);
+  color: white;
+}
+
+canvas#whiteboardCanvas {
+  background: #0f172a;
+  cursor: crosshair;
+  width: 100%;
+  height: 100%;
+}
+
+/* AI CO-PILOT ASSISTANT PANEL IN CALL */
+.copilot-panel {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.copilot-card {
+  background: rgba(255, 255, 255, 0.04);
+  border-left: 3px solid #38bdf8;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-size: 0.82rem;
+}
+
+/* TEACHER WALLET STYLING */
+.wallet-balance-card {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  border: 1px solid rgba(129, 140, 248, 0.4);
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.wallet-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #38bdf8;
+}
+
+/* LEADERBOARD TABLE */
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.leaderboard-table th {
+  text-align: left;
+  padding: 8px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--card-border);
+}
+
+.leaderboard-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+

@@ -14,7 +14,7 @@
         "Biology - Photosynthesis": 65,
         "Mathematics - Pythagoras": 80,
         "Computer Science - Agentic AI": 58,
-        "newton": 60
+        "newton": 70
       },
       "badges": [
         "Odia Science Explorer",
@@ -52,6 +52,34 @@
         "debug_offline_sync"
       ],
       "selected_framework": "autonomous"
+    },
+    "admin@prerana.ai": {
+      "id": "adm_001",
+      "email": "admin@prerana.ai",
+      "password": "admin123",
+      "name": "Prerana Platform Administrator",
+      "role": "admin",
+      "language": "en",
+      "permissions": [
+        "all"
+      ]
+    },
+    "shakti_rts@gmail.com": {
+      "id": "stu_2e468e",
+      "email": "shakti_rts@gmail.com",
+      "password": "VjCVyN2cKF@Yrwj",
+      "name": "Shakti_rts",
+      "role": "student",
+      "language": "en",
+      "grade": "Standard 10",
+      "mastery": {
+        "Physics": 50,
+        "Mathematics": 50
+      },
+      "badges": [
+        "Quick Learner"
+      ],
+      "active_goal": "Personalized Vernacular Learning"
     }
   }
 }

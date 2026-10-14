@@ -6,18 +6,8 @@
 
 class PreranaApp {
   constructor() {
-    this.currentUser = {
-      email: "student@prerana.ai",
-      name: "Aarav Mohapatra (ଆରଭ ମହାପାତ୍ର)",
-      role: "student",
-      language: "or",
-      mastery: {
-        "Physics - Newton's Laws": 72,
-        "Biology - Photosynthesis": 65,
-        "Mathematics - Pythagoras": 80,
-        "Computer Science - Agentic AI": 58
-      }
-    };
+    this.currentUser = null;
+    this.currentRole = "student";
     this.currentLanguage = "or";
     this.currentFramework = "autonomous";
     this.lastQuizData = null;
@@ -30,15 +20,38 @@ class PreranaApp {
   async init() {
     this.bindEvents();
     this.loadLanguage("or");
-    this.refreshStudentMastery(this.currentUser.mastery);
-    this.loadDeveloperStats();
     this.loadPitchDeck();
-
-    // Show initial welcome in Odia/selected language
-    this.addAgentGreeting();
   }
 
   bindEvents() {
+    document.querySelectorAll("[data-login-role]").forEach(button => {
+      button.addEventListener("click", () => {
+        const role = button.dataset.loginRole;
+        document.getElementById("loginRole").value = role;
+        document.querySelectorAll("[data-login-role]").forEach(roleButton => {
+          const selected = roleButton === button;
+          roleButton.classList.toggle("selected", selected);
+          roleButton.setAttribute("aria-pressed", String(selected));
+        });
+        document.getElementById("loginError").hidden = true;
+      });
+    });
+
+    const loginForm = document.getElementById("loginForm");
+    if (loginForm) {
+      loginForm.addEventListener("submit", event => this.handleLogin(event));
+    }
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        document.getElementById("appShell").hidden = true;
+        document.getElementById("loginPage").hidden = false;
+        this.currentUser = null;
+        document.getElementById("loginPassword").value = "";
+      });
+    }
+
     // Language dropdown
     const langSelect = document.getElementById("langSelect");
     if (langSelect) {
@@ -152,7 +165,14 @@ class PreranaApp {
     if (devRagBtn) {
       devRagBtn.addEventListener("click", () => this.handleDevRagSearch());
     }
+
+    // Live Teacher Marketplace open button
+    const openMarketBtn = document.getElementById("openMarketplaceBtn");
+    if (openMarketBtn) {
+      openMarketBtn.addEventListener("click", () => this.openMarketplaceModal());
+    }
   }
+
 
   // -------------------------------------------------------------
   // LANGUAGE SWITCHER
@@ -183,7 +203,6 @@ class PreranaApp {
       pitchDeckBtn: t.pitch_deck_btn,
       tabStudentText: t.role_student,
       tabTeacherText: t.role_teacher,
-      tabDevText: t.role_developer,
       chatInput: t.student_placeholder,
       masteryTitle: t.mastery_level,
       quizCardTitle: t.quiz_title,
@@ -216,14 +235,75 @@ class PreranaApp {
     });
 
     const activePanel = document.getElementById(`${role}Portal`);
-    if (activePanel) {
-      activePanel.classList.add("active");
+    const panel = role === "admin"
+      ? document.getElementById("developerPortal")
+      : activePanel;
+    if (panel) {
+      panel.classList.add("active");
     }
 
-    if (role === "developer") {
+    if (role === "admin" || role === "developer") {
       this.loadDeveloperStats();
+      this.loadAdminMetrics();
     } else if (role === "teacher") {
       this.loadTeacherAnalytics();
+      this.loadTeacherLeaderboard();
+      this.loadTeacherWallet();
+    } else if (role === "parent") {
+      this.loadParentDashboard();
+    }
+  }
+
+
+  async handleLogin(event) {
+    event.preventDefault();
+    const submitButton = document.getElementById("loginSubmit");
+    const errorMessage = document.getElementById("loginError");
+    const role = document.getElementById("loginRole").value;
+    submitButton.disabled = true;
+    submitButton.textContent = "Signing in...";
+    errorMessage.hidden = true;
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: document.getElementById("loginEmail").value.trim(),
+          password: document.getElementById("loginPassword").value,
+          expected_role: role
+        })
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.detail || "Unable to sign in. Check your email and password.");
+      }
+      if (!data.session || !data.session.user) {
+        throw new Error("The sign-in response was incomplete. Please try again.");
+      }
+
+      this.currentUser = data.session.user;
+      this.currentRole = role;
+      this.currentLanguage = this.currentUser.language || "en";
+      document.getElementById("langSelect").value = this.currentLanguage;
+      const displayName = document.getElementById("studentDisplayName");
+      const displaySchool = document.getElementById("studentDisplaySchool");
+      if (displayName) displayName.textContent = this.currentUser.name || this.currentUser.email;
+      if (displaySchool) {
+        displaySchool.textContent = this.currentUser.school || this.currentUser.institution || "";
+      }
+      this.refreshStudentMastery(this.currentUser.mastery || {});
+      await this.switchLanguage(this.currentLanguage);
+      document.getElementById("loginPage").hidden = true;
+      document.getElementById("appShell").hidden = false;
+      this.switchRole(role);
+      if (role === "student") this.addAgentGreeting();
+    } catch (error) {
+      errorMessage.textContent = error.message;
+      errorMessage.hidden = false;
+    } finally {
+      submitButton.disabled = false;
+      submitButton.textContent = "Sign in";
     }
   }
 
@@ -407,6 +487,19 @@ class PreranaApp {
       window.speechController.speakText(text, this.currentLanguage);
     };
     bubble.appendChild(ttsBtn);
+
+    // FEATURE 1: AI Confidence Check (✅ I Understood / ❌ Still Confused)
+    const confBar = document.createElement("div");
+    confBar.className = "confidence-check-bar";
+    confBar.innerHTML = `
+      <span style="font-size:0.75rem; color:#94a3b8;">Confidence Check:</span>
+      <button class="btn btn-secondary btn-sm" onclick="window.app.handleUnderstood(this)">✅ I Understood</button>
+      <button class="escalation-trigger-btn btn-sm" onclick="window.app.handleStillConfused('${this.escapeHtml(text.slice(0, 140))}')">
+        ❌ Still Confused (Connect Live Teacher)
+      </button>
+    `;
+    bubble.appendChild(confBar);
+
 
     // Interactive Quiz Box
     if (quiz) {
@@ -738,8 +831,475 @@ class PreranaApp {
     this.renderCurrentSlide();
   }
 
+  // =============================================================
+  // AI-TO-LIVE TEACHER ESCALATION SYSTEM (ASTROTALK MODEL)
+  // =============================================================
+
+  handleUnderstood(btn) {
+    btn.innerHTML = "🎉 Understood! (+10 Mastery)";
+    btn.style.background = "#10b981";
+    btn.style.color = "white";
+    btn.disabled = true;
+    if (this.currentUser && this.currentUser.mastery) {
+      for (const k in this.currentUser.mastery) {
+        this.currentUser.mastery[k] = Math.min(100, this.currentUser.mastery[k] + 2);
+      }
+      this.refreshStudentMastery(this.currentUser.mastery);
+    }
+  }
+
+  async handleStillConfused(questionSnippet) {
+    // FEATURE 16: AI Escalation Intelligence
+    const confirmEscalate = confirm(
+      "🤖 AI Tutor: It looks like you're struggling with this concept. A live expert teacher can explain it with visual analogies on a shared whiteboard.\n\nConnect to a live teacher now?"
+    );
+    if (!confirmEscalate) return;
+
+    this.lastConfusedQuestion = questionSnippet || "Newton's Third Law and action-reaction non-cancellation";
+    this.openMarketplaceModal();
+  }
+
+  openMarketplaceModal() {
+    const modal = document.getElementById("marketplaceModal");
+    if (modal) {
+      modal.classList.add("active");
+      this.loadMarketplace();
+    }
+  }
+
+  async loadMarketplace() {
+    const grid = document.getElementById("marketplaceGrid");
+    if (!grid) return;
+    grid.innerHTML = "<div style='color:#a5b4fc;'>Finding available teachers...</div>";
+
+    const subject = document.getElementById("marketFilterSubject") ? document.getElementById("marketFilterSubject").value : "All";
+    const language = document.getElementById("marketFilterLang") ? document.getElementById("marketFilterLang").value : "All";
+    const grade = document.getElementById("marketFilterClass") ? document.getElementById("marketFilterClass").value : "All";
+
+    try {
+      const url = `/api/escalation/marketplace?subject=${encodeURIComponent(subject)}&language=${encodeURIComponent(language)}&grade=${encodeURIComponent(grade)}`;
+      const resp = await fetch(url);
+      const data = await resp.json();
+
+      if (data.status === "success") {
+        grid.innerHTML = data.teachers.map(t => `
+          <div class="teacher-card">
+            <span class="teacher-online-dot ${t.is_online ? 'online' : 'offline'}" title="${t.is_online ? 'Online' : 'Offline'}"></span>
+            <div class="teacher-card-top">
+              <div class="teacher-avatar-lg">${t.avatar}</div>
+              <div>
+                <strong style="font-size:1.05rem; color:#f8fafc;">${this.escapeHtml(t.name)}</strong>
+                <div style="font-size:0.78rem; color:#38bdf8;">${this.escapeHtml(t.qualification)}</div>
+                <div style="font-size:0.75rem; color:#94a3b8;">${t.experience_years} years exp • ⭐ ${t.rating} (${t.total_sessions} sessions)</div>
+              </div>
+            </div>
+
+            <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">${this.escapeHtml(t.bio)}</p>
+
+            ${t.emergency_expert ? `
+              <div class="emergency-badge">
+                🚨 ${this.escapeHtml(t.emergency_specialty || 'Board Exam Mentor')}
+              </div>
+            ` : ''}
+
+            <div style="margin-bottom:8px;">
+              ${t.languages.map(l => `<span class="lang-chip">${this.escapeHtml(l)}</span>`).join("")}
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px; margin-top:8px;">
+              <div>
+                <div class="price-tag">₹${t.price_per_min}/min</div>
+                <div style="font-size:0.75rem; color:#94a3b8;">₹${t.price_per_session} for 15-min call</div>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="window.app.connectSpecificTeacher('${t.id}')">
+                📞 Call Now (15 Min)
+              </button>
+            </div>
+          </div>
+        `).join("");
+      }
+    } catch (e) {
+      grid.innerHTML = `<div style='color:#ef4444;'>Failed to load marketplace: ${e.message}</div>`;
+    }
+  }
+
+  // FEATURE 7: Uber-like Doubt Broadcast
+  async handleUberBroadcast() {
+    const btn = document.getElementById("uberBroadcastBtn");
+    btn.disabled = true;
+    btn.textContent = "📡 Broadcasting to matching teachers (60s)...";
+
+    const payload = {
+      student_id: (this.currentUser && this.currentUser.id) || "std_001",
+      student_name: (this.currentUser && this.currentUser.name) || "Aarav Mohapatra",
+      grade: "Class 10",
+      subject: "Physics",
+      chapter: "Newton's Laws of Motion",
+      original_question: this.lastConfusedQuestion || "Why action and reaction forces don't cancel each other out",
+      confusion_reason: "Student struggling with conceptual abstraction and force vector directions",
+      ai_attempts: 2,
+      student_language: this.currentLanguage || "or",
+      mode: "broadcast",
+      preferred_interaction: "whiteboard"
+    };
+
+    try {
+      const resp = await fetch("/api/escalation/broadcast", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await resp.json();
+
+      if (data.status === "success") {
+        btn.textContent = "✅ Teacher Accepted! Connecting...";
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.textContent = "⚡ Instant Connect (Auto-Match Best Teacher)";
+          document.getElementById("marketplaceModal").classList.remove("active");
+          this.startLiveSessionRoom(data.session, data.teacher);
+        }, 800);
+      }
+    } catch (e) {
+      alert("Broadcast failed: " + e.message);
+      btn.disabled = false;
+      btn.textContent = "⚡ Instant Connect (Auto-Match Best Teacher)";
+    }
+  }
+
+  async connectSpecificTeacher(teacherId) {
+    const payload = {
+      escalation_request: {
+        student_id: (this.currentUser && this.currentUser.id) || "std_001",
+        student_name: (this.currentUser && this.currentUser.name) || "Aarav Mohapatra",
+        grade: "Class 10",
+        subject: "Physics",
+        chapter: "Newton's Laws of Motion",
+        original_question: this.lastConfusedQuestion || "Why action and reaction forces don't cancel each other out",
+        confusion_reason: "Student struggling with conceptual abstraction",
+        ai_attempts: 2,
+        student_language: this.currentLanguage || "or",
+        mode: "instant",
+        preferred_interaction: "whiteboard"
+      },
+      teacher_id: teacherId
+    };
+
+    try {
+      const resp = await fetch("/api/escalation/connect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await resp.json();
+      if (data.status === "success") {
+        document.getElementById("marketplaceModal").classList.remove("active");
+        this.startLiveSessionRoom(data.session, data.teacher);
+      }
+    } catch (e) {
+      alert("Connection failed: " + e.message);
+    }
+  }
+
+  startLiveSessionRoom(session, teacher) {
+    this.activeSession = session;
+    const roomModal = document.getElementById("sessionRoomModal");
+    if (!roomModal) return;
+
+    // Header info
+    document.getElementById("roomTeacherAvatar").textContent = teacher.avatar || "👩‍🏫";
+    document.getElementById("roomTeacherName").textContent = teacher.name;
+    document.getElementById("roomSessionTopic").textContent = `${session.subject} - ${session.chapter} • Live 1-on-1 Consultation`;
+
+    // Timer (15:00 countdown)
+    let timeLeft = 15 * 60;
+    const timerSpan = document.getElementById("sessionTimer");
+    if (this.sessionTimerInterval) clearInterval(this.sessionTimerInterval);
+    this.sessionTimerInterval = setInterval(() => {
+      timeLeft--;
+      if (timeLeft <= 0) {
+        clearInterval(this.sessionTimerInterval);
+        this.endLiveSession();
+        return;
+      }
+      const m = Math.floor(timeLeft / 60);
+      const s = timeLeft % 60;
+      if (timerSpan) timerSpan.textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
+    }, 1000);
+
+    roomModal.classList.add("active");
+
+    // Initialize Whiteboard Canvas
+    setTimeout(() => {
+      this.initWhiteboard();
+    }, 200);
+  }
+
+  switchSessionMode(mode) {
+    document.querySelectorAll(".mode-tab-btn").forEach(b => {
+      b.classList.toggle("active", b.dataset.mode === mode);
+    });
+
+    const canvas = document.getElementById("whiteboardCanvas");
+    const tb = document.getElementById("wbToolbar");
+    const videoStage = document.getElementById("videoStage");
+
+    if (mode === "whiteboard") {
+      canvas.style.display = "block";
+      tb.style.display = "flex";
+      videoStage.style.display = "none";
+    } else {
+      canvas.style.display = "none";
+      tb.style.display = "none";
+      videoStage.style.display = "flex";
+      document.getElementById("videoTeacherTitle").textContent =
+        mode === "video" ? "Live Video Feed: Prof. Rashmi Rekha Das" :
+        mode === "audio" ? "Live Audio Stream: Connected" : "Chat-Only Focus View";
+    }
+  }
+
+  // WHITEBOARD DRAWING ENGINE (FEATURE 6)
+  initWhiteboard() {
+    const canvas = document.getElementById("whiteboardCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    this.wbTool = 'pen';
+    this.isDrawing = false;
+
+    // Default sketch showing Newton 3rd law action-reaction pairs
+    ctx.fillStyle = "#0f172a";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = "#38bdf8";
+    ctx.lineWidth = 3;
+    ctx.font = "16px sans-serif";
+    ctx.fillStyle = "#facc15";
+    ctx.fillText("Boat (Object A)", 120, 260);
+    ctx.strokeRect(100, 280, 160, 80);
+
+    ctx.fillStyle = "#34d399";
+    ctx.fillText("Water (Object B)", 420, 260);
+    ctx.strokeRect(400, 280, 160, 80);
+
+    // Arrows
+    ctx.beginPath();
+    ctx.strokeStyle = "#ef4444";
+    ctx.moveTo(260, 320);
+    ctx.lineTo(390, 320);
+    ctx.stroke();
+    ctx.fillStyle = "#ef4444";
+    ctx.fillText("Action on Water ➔", 270, 310);
+
+    ctx.beginPath();
+    ctx.strokeStyle = "#34d399";
+    ctx.moveTo(400, 340);
+    ctx.lineTo(270, 340);
+    ctx.stroke();
+    ctx.fillStyle = "#34d399";
+    ctx.fillText("⮜ Reaction on Boat", 270, 360);
+
+    canvas.onmousedown = (e) => {
+      this.isDrawing = true;
+      const rect = canvas.getBoundingClientRect();
+      this.lastX = e.clientX - rect.left;
+      this.lastY = e.clientY - rect.top;
+    };
+
+    canvas.onmousemove = (e) => {
+      if (!this.isDrawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      if (this.wbTool === 'pen') {
+        ctx.strokeStyle = "#60a5fa";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(this.lastX, this.lastY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      } else if (this.wbTool === 'eraser') {
+        ctx.fillStyle = "#0f172a";
+        ctx.fillRect(x - 12, y - 12, 24, 24);
+      }
+      this.lastX = x;
+      this.lastY = y;
+    };
+
+    canvas.onmouseup = () => { this.isDrawing = false; };
+  }
+
+  setWbTool(tool) {
+    this.wbTool = tool;
+    document.querySelectorAll(".wb-tool-btn").forEach(b => b.classList.remove("active"));
+  }
+
+  addWbFormula() {
+    const canvas = document.getElementById("whiteboardCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    ctx.font = "20px 'Segoe UI', serif";
+    ctx.fillStyle = "#facc15";
+    ctx.fillText("F_Action = - F_Reaction (m_1*a_1 = -m_2*a_2)", 150, 440);
+  }
+
+  clearWb() {
+    const canvas = document.getElementById("whiteboardCanvas");
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#0f172a";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }
+
+  sendSessionChatMessage() {
+    const input = document.getElementById("sessionChatInput");
+    const log = document.getElementById("sessionChatLog");
+    if (!input || !input.value.trim() || !log) return;
+
+    const userText = input.value.trim();
+    input.value = "";
+
+    const userDiv = document.createElement("div");
+    userDiv.style.color = "#f8fafc";
+    userDiv.innerHTML = `<strong>You:</strong> ${this.escapeHtml(userText)}`;
+    log.appendChild(userDiv);
+    log.scrollTop = log.scrollHeight;
+
+    // Simulate teacher real-time voice/chat reply
+    setTimeout(() => {
+      const teacherDiv = document.createElement("div");
+      teacherDiv.style.color = "#38bdf8";
+      teacherDiv.innerHTML = `<strong>Teacher:</strong> Exactly! Since the action acts on the water and the reaction acts on the boat, they act on two different bodies, which is why they never cancel each other!`;
+      log.appendChild(teacherDiv);
+      log.scrollTop = log.scrollHeight;
+    }, 1200);
+  }
+
+  async endLiveSession() {
+    if (this.sessionTimerInterval) clearInterval(this.sessionTimerInterval);
+    document.getElementById("sessionRoomModal").classList.remove("active");
+
+    const sessId = (this.activeSession && this.activeSession.id) || "sess_demo";
+    try {
+      const resp = await fetch("/api/escalation/complete-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: sessId,
+          student_rating: 5.0,
+          student_review: "Teacher explained with great visual drawings!"
+        })
+      });
+      const data = await resp.json();
+      if (data.status === "success") {
+        document.getElementById("sessionSummaryModal").classList.add("active");
+      }
+    } catch (e) {
+      document.getElementById("sessionSummaryModal").classList.add("active");
+    }
+  }
+
+  async loadTeacherLeaderboard() {
+    const tbody = document.getElementById("leaderboardBody");
+    if (!tbody) return;
+    try {
+      const resp = await fetch("/api/teacher/leaderboard");
+      const data = await resp.json();
+      if (data.status === "success") {
+        tbody.innerHTML = data.leaderboard.map((t, idx) => `
+          <tr>
+            <td>
+              <strong>#${idx + 1} ${t.avatar} ${this.escapeHtml(t.name)}</strong><br>
+              <small style="color:#94a3b8;">${t.specialty}</small>
+            </td>
+            <td style="color:#facc15;">⭐ ${t.rating}</td>
+            <td>${t.total_sessions}</td>
+            <td style="color:#38bdf8; font-weight:bold;">${t.performance_score}</td>
+          </tr>
+        `).join("");
+      }
+    } catch (e) {
+      console.warn("Leaderboard error:", e);
+    }
+  }
+
+  async loadTeacherWallet() {
+    try {
+      const resp = await fetch("/api/teacher/wallet/tch_001");
+      const data = await resp.json();
+      if (data.status === "success") {
+        const w = data.wallet;
+        const totalEl = document.getElementById("walletTotalEarnings");
+        const pendEl = document.getElementById("walletPendingEarnings");
+        if (totalEl) totalEl.textContent = `₹${w.total_earnings.toLocaleString()}`;
+        if (pendEl) pendEl.textContent = `₹${w.pending_earnings.toLocaleString()}`;
+      }
+    } catch (e) {
+      console.warn("Wallet load error:", e);
+    }
+  }
+
+  async loadParentDashboard() {
+    try {
+      const resp = await fetch("/api/parent/dashboard");
+      const data = await resp.json();
+      if (data.status === "success") {
+        console.log("Parent dashboard loaded successfully");
+      }
+    } catch (e) {
+      console.warn("Parent error:", e);
+    }
+  }
+
+  async loadAdminMetrics() {
+    try {
+      const resp = await fetch("/api/admin/metrics");
+      const data = await resp.json();
+      if (data.status === "success") {
+        const m = data.metrics;
+        const label = document.getElementById("emergencyStatusLabel");
+        if (label) {
+          label.textContent = m.exam_emergency_mode ? "ACTIVE (Priority Matchmaking ON)" : "OFF";
+          label.style.color = m.exam_emergency_mode ? "#ef4444" : "#facc15";
+        }
+      }
+    } catch (e) {
+      console.warn("Admin metrics error:", e);
+    }
+  }
+
+  async toggleEmergencyMode() {
+    const label = document.getElementById("emergencyStatusLabel");
+    const isCurrentlyActive = label && label.textContent.includes("ACTIVE");
+    const newStatus = !isCurrentlyActive;
+
+    try {
+      const resp = await fetch("/api/admin/toggle-emergency", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled: newStatus })
+      });
+      const data = await resp.json();
+      if (data.status === "success") {
+        if (label) {
+          label.textContent = data.exam_emergency_mode ? "ACTIVE (Priority Matchmaking ON)" : "OFF";
+          label.style.color = data.exam_emergency_mode ? "#ef4444" : "#facc15";
+        }
+        alert(
+          data.exam_emergency_mode
+            ? "🚨 Exam Emergency Mode ACTIVATED! Fast Revision & Board Exam Mentors prioritized on marketplace."
+            : "Exam Emergency Mode deactivated."
+        );
+      }
+    } catch (e) {
+      alert("Error toggling emergency mode: " + e.message);
+    }
+  }
+
   escapeHtml(str) {
     if (!str) return "";
+
     return String(str)
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")

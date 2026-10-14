@@ -20,6 +20,8 @@ from app.rag_engine import rag_engine
 from app.agent_engine import agent_engine
 from app.speech_engine import speech_engine
 from app.auth_db import auth_db
+from app.escalation_engine import escalation_engine, EscalationRequest
+
 
 app = FastAPI(
     title="Prerana AI - Agentic EdTech Platform",
@@ -76,6 +78,19 @@ class RAGQueryRequest(BaseModel):
     query: str
     language: Optional[str] = None
     top_k: int = 3
+
+class ConnectTeacherRequest(BaseModel):
+    escalation_request: EscalationRequest
+    teacher_id: Optional[str] = None
+
+class CompleteSessionRequest(BaseModel):
+    session_id: str
+    student_rating: float = 5.0
+    student_review: str = "Great live explanation!"
+
+class ToggleEmergencyRequest(BaseModel):
+    enabled: bool
+
 
 
 # -------------------------------------------------------------
@@ -406,8 +421,88 @@ def get_pitch_deck():
     }
 
 # -------------------------------------------------------------
+# AI-TO-LIVE TEACHER ESCALATION SYSTEM (ASTROTALK MODEL)
+# -------------------------------------------------------------
+
+@app.get("/api/escalation/marketplace")
+def get_teacher_marketplace(
+    subject: Optional[str] = None,
+    language: Optional[str] = None,
+    grade: Optional[str] = None,
+    max_price: Optional[float] = None,
+    emergency_only: bool = False
+):
+    teachers = escalation_engine.get_marketplace_teachers(
+        subject=subject,
+        language=language,
+        grade=grade,
+        max_price=max_price,
+        emergency_only=emergency_only
+    )
+    return {"status": "success", "count": len(teachers), "teachers": teachers}
+
+@app.post("/api/escalation/brief")
+def generate_brief(req: EscalationRequest):
+    brief = escalation_engine.generate_teacher_brief(req)
+    return {"status": "success", "brief": brief}
+
+@app.post("/api/escalation/connect")
+def connect_teacher(req: ConnectTeacherRequest):
+    result = escalation_engine.create_instant_escalation(
+        req=req.escalation_request,
+        teacher_id=req.teacher_id
+    )
+    return result
+
+@app.post("/api/escalation/broadcast")
+def broadcast_doubt(req: EscalationRequest):
+    result = escalation_engine.broadcast_doubt_to_teachers(req)
+    return result
+
+@app.get("/api/escalation/copilot-hints")
+def get_copilot_hints(subject: str = "Physics", chapter: str = "Newton's Laws", question: str = ""):
+    hints = escalation_engine.get_teacher_ai_copilot_hints(subject, chapter, question)
+    return {"status": "success", "copilot_hints": hints}
+
+@app.post("/api/escalation/complete-session")
+def complete_live_session(req: CompleteSessionRequest):
+    result = escalation_engine.complete_session(
+        session_id=req.session_id,
+        student_rating=req.student_rating,
+        student_review=req.student_review
+    )
+    return result
+
+@app.get("/api/parent/dashboard")
+def get_parent_portal(student_id: str = "std_001"):
+    data = escalation_engine.get_parent_dashboard(student_id)
+    return {"status": "success", "dashboard": data}
+
+@app.get("/api/teacher/wallet/{teacher_id}")
+def get_wallet(teacher_id: str):
+    wallet = escalation_engine.get_teacher_wallet(teacher_id)
+    return {"status": "success", "wallet": wallet}
+
+@app.get("/api/teacher/leaderboard")
+def get_leaderboard():
+    board = escalation_engine.get_teacher_leaderboard()
+    return {"status": "success", "leaderboard": board}
+
+@app.get("/api/admin/metrics")
+def get_admin_metrics():
+    metrics = escalation_engine.get_admin_metrics()
+    return {"status": "success", "metrics": metrics}
+
+@app.post("/api/admin/toggle-emergency")
+def toggle_emergency(req: ToggleEmergencyRequest):
+    status = escalation_engine.toggle_exam_emergency_mode(req.enabled)
+    return {"status": "success", "exam_emergency_mode": status}
+
+
+# -------------------------------------------------------------
 # STATIC FILES SERVING (MOUNT AT ROOT)
 # -------------------------------------------------------------
+
 
 static_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "static")
 if os.path.exists(static_dir):
