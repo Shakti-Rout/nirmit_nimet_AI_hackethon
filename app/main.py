@@ -72,6 +72,12 @@ class OfflineSyncRequest(BaseModel):
     offline_events: List[Dict[str, Any]]
     user_email: str = "student@prerana.ai"
 
+class RAGQueryRequest(BaseModel):
+    query: str
+    language: Optional[str] = None
+    top_k: int = 3
+
+
 # -------------------------------------------------------------
 # AUTH & ROLES
 # -------------------------------------------------------------
@@ -201,9 +207,10 @@ def get_rag_stats():
     return {"status": "success", "stats": rag_engine.get_stats()}
 
 @app.post("/api/rag/query")
-def test_rag_query(query: str, language: Optional[str] = None, top_k: int = 3):
-    results = rag_engine.query(query, top_k=top_k, language_filter=language)
-    return {"status": "success", "query": query, "results": results}
+def test_rag_query(req: RAGQueryRequest):
+    results = rag_engine.query(req.query, top_k=req.top_k, language_filter=req.language)
+    return {"status": "success", "query": req.query, "results": results}
+
 
 @app.post("/api/teacher/upload")
 async def upload_curriculum_document(
