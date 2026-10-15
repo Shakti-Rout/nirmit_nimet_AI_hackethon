@@ -94,9 +94,9 @@ python run.py
 ```
 Or with Uvicorn:
 ```bash
-uvicorn app.main:app --host 127.0.0.1 --port 8000
+uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
-Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)** in your browser.
+Open **[http://localhost:8000](http://localhost:8000)** on this computer. To access the app from another device on the same network, run it with `--host 0.0.0.0` and open `http://<this-computer-ip>:8000` on that device.
 
 ### Demo Sign-ins
 Select the matching role on the landing page, then use one of these accounts:
